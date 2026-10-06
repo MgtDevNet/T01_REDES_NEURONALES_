@@ -1,7 +1,7 @@
 # Python: archivos compilados que se generan solos
 __pycache__/
 *.pyc
-
+*Zone.Identifier
 # Resultados: se regeneran al ejecutar el script
 resultados.csv
 resultados.png
