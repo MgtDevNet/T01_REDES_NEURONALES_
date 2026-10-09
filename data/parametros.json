@@ -1,0 +1,38 @@
+{
+  "seed": 20261008,
+  "vehicle": {
+    "name": "DEMO - vehículo hipotético",
+    "fuel_type": "gasolina",
+    "consumption_l_100km": 4.7
+  },
+  "fuel_prices_eur_l": {
+    "2020": 1.2,
+    "2026": 1.8
+  },
+  "hour_value_eur": {
+    "base_2020": 20.0,
+    "base_2026": 26.18
+  },
+  "sensitivity": {
+    "min": 0.0,
+    "max": 40.0,
+    "step": 10.0
+  },
+  "aco": {
+    "ants": 8,
+    "iterations": 35,
+    "alpha": 1.0,
+    "beta": 3.0,
+    "rho": 0.5,
+    "q": 1.0,
+    "elite_weight": 1.0
+  },
+  "ga": {
+    "population": 30,
+    "generations": 50,
+    "elite": 3,
+    "tournament_k": 3,
+    "crossover_rate": 0.9,
+    "mutation_rate": 0.2
+  }
+}
