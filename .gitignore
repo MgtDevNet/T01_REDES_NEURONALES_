@@ -1,6 +1,26 @@
+
 .venv/
 __pycache__/
 *.pyc
 .Rhistory
 .RData
 .DS_Store
+
+# Python: archivos compilados que se generan solos
+__pycache__/
+*.pyc
+*Zone.Identifier
+# Resultados: se regeneran al ejecutar el script
+resultados.csv
+resultados.png
+
+# Entornos virtuales (si alguien crea uno)
+venv/
+.venv/
+
+# Archivos del sistema y de editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+

@@ -1,3 +1,4 @@
+
 # TSP España — paquete DEMO ejecutable
 
 ## Qué es esta versión
@@ -71,4 +72,3 @@ Después de aprobar esta demo, se reemplazarán los archivos DEMO por:
 - `rutas_2020.csv`: datos históricos realmente verificables.
 - `rutas_2026.csv`: datos actuales realmente verificables.
 - `parametros.json`: vehículo, combustible y valor de la hora con sus fuentes.
-
