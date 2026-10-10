@@ -1,3 +1,11 @@
+
+.venv/
+__pycache__/
+*.pyc
+.Rhistory
+.RData
+.DS_Store
+
 # Python: archivos compilados que se generan solos
 __pycache__/
 *.pyc
@@ -15,3 +23,4 @@ venv/
 Thumbs.db
 .vscode/
 .idea/
+
