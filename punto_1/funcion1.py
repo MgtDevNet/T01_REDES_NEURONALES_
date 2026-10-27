@@ -5,10 +5,10 @@ Métodos: descenso por gradiente (GD), algoritmo genético (GA), PSO y evolució
 diferencial (DE). Adem�s una l�ea base opcional: b�squeda aleatoria.
 
 Comandos (todos con un solo comando, sin editar código):
-    python optimizacion.py check
-    python optimizacion.py run   --algo pso --dim 2 --seed 42
-    python optimizacion.py stats --runs 30 --dims 2 3
-    python optimizacion.py gif   --algo gradient_descent --out figs/gd.gif
+    python punto_1/funcion1.py check
+    python punto_1/funcion1.py run   --algo pso --dim 2 --seed 42
+    python punto_1/funcion1.py stats --runs 30 --dims 2 3
+    python punto_1/funcion1.py gif   --algo gradient_descent --out figs/gd.gif
 
 Los hiperparámetros se cambian con --param (p. ej. --param tasa_aprendizaje_inicial=0.5
 --param pso.inercia=0.6) o con un archivo --config config.json.
@@ -198,11 +198,19 @@ def accepted_params(algo: str) -> set[str]:
 @register_algorithm("gradient_descent")
 def gradient_descent(obj, dim, bounds, rng, max_evals, record=False,
                      tolerancia=1e-8, paso_gradiente=1e-6, tasa_aprendizaje_inicial=1.0,
-                     factor_armijo=1e-4, factor_reduccion=0.5, max_busqueda_lineal=60):
+                     factor_armijo=1e-4, factor_reduccion=0.5, max_busqueda_lineal=60, x0=None):
     """x_{k+1} = P(x_k - a_k g_k), g_k por diferencias centrales, a_k por
     Armijo con retroceso (a <- factor_reduccion*a) y P = proyección al dominio."""
     lim_inf, lim_sup = bounds
-    x = rng.uniform(lim_inf, lim_sup, dim)       # único elemento aleatorio: el punto inicial
+    if x0 is None:
+        x = rng.uniform(lim_inf, lim_sup, dim)
+    else:
+        x = np.asarray(x0, dtype=float)
+        if x.shape != (dim,) or not np.isfinite(x).all():
+            raise ValueError(f'x0 debe contener {dim} coordenadas finitas')
+        if ((x < lim_inf) | (x > lim_sup)).any():
+            raise ValueError(f'x0 debe estar en [{lim_inf}, {lim_sup}]')
+        x = x.copy()
     fx = obj(x)
     historial, traza_evals = [fx], [obj.n_equiv]
     frames = [x.copy()] if record else None
@@ -905,6 +913,9 @@ def graficar_optimizacion(res: OptimizeResult, max_frames: int = 60, mostrar: bo
     else:
         raise ValueError(f"La visualización animada está implementada para 2D y 3D (se recibió dim={res.dim}).")
 
+    fig.add_annotation(text='Fuente: elaboración propia; punto_1/funcion1.py.',
+                       xref='paper', yref='paper', x=0, y=-0.2, showarrow=False)
+    fig.update_layout(margin=dict(b=140))
     if mostrar:
         try:
             from IPython import get_ipython
@@ -1051,6 +1062,8 @@ def build_parser():
                         help="función de prueba (por defecto: rosenbrock)")
     common.add_argument("--config", help="archivo JSON con valores por defecto")
     common.add_argument("--max-evals", dest="max_evals", type=int)
+    common.add_argument('--x0', nargs='+', type=float,
+                        help='condición inicial de GD, ejemplo --x0 -1.2 1')
     common.add_argument("--param", action="append", metavar="[algo.]clave=valor")
 
     p = argparse.ArgumentParser(description=__doc__,
@@ -1099,6 +1112,13 @@ def main(argv=None):
         base = {a: dict(cfg.get("params", {}).get(a, {})) for a in ALGORITHMS}
         for a, d in parse_overrides(args.param, selected).items():
             base[a].update(d)
+        punto = getattr(args, 'x0', None)
+        if punto is None:
+            punto = base['gradient_descent'].get('x0', cfg.get('x0'))
+        if punto is not None:
+            if 'gradient_descent' not in selected:
+                raise SystemExit('--x0 solo se aplica a gradient_descent')
+            base['gradient_descent']['x0'] = punto
         return base
 
     if args.cmd == "run":
